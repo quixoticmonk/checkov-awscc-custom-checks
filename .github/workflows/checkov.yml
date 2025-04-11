@@ -3,8 +3,16 @@ name: Checkov Custom Checks
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'examples/**'
+      - 'custom_checks/**'
+      - '.github/workflows/checkov.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'examples/**'
+      - 'custom_checks/**'
+      - '.github/workflows/checkov.yml'
   workflow_dispatch:
 
 jobs:
@@ -12,16 +20,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          cache: 'pip'
+
+      - name: Cache uv
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/uv
+            ~/.cargo/bin/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Install uv
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
+          if ! command -v uv &> /dev/null; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+          fi
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
 
       - name: Install dependencies
         run: |
@@ -29,10 +60,9 @@ jobs:
           source .venv/bin/activate
           uv pip install checkov jq
 
-      - name: Run Checkov on examples
+      - name: Run Checkov on examples (optimized)
         id: run_checkov
         run: |
-          # Activate the virtual environment
           source .venv/bin/activate
           
           # Create a list of all example files
@@ -45,24 +75,34 @@ jobs:
           UNEXPECTED_FAILED_CHECKS=0
           SUMMARY=""
           
-          # Run Checkov on each example file
+          # Process files in batches for better performance
+          # Group files by check ID to reduce the number of Checkov runs
+          declare -A CHECK_FILES
+          
           for file_path in $EXAMPLE_FILES; do
-            echo "Running Checkov on $file_path"
-            
-            # Extract check ID from filename
             filename=$(basename "$file_path")
             CHECK_NUM=$(echo $filename | cut -d'_' -f2)
             CHECK_ID="CKV_AWSCC_${CHECK_NUM}"
             
-            echo "Using check ID: $CHECK_ID"
+            if [ -z "${CHECK_FILES[$CHECK_ID]}" ]; then
+              CHECK_FILES[$CHECK_ID]="$file_path"
+            else
+              CHECK_FILES[$CHECK_ID]="${CHECK_FILES[$CHECK_ID]} $file_path"
+            fi
+          done
+          
+          # Run Checkov once per check ID on all relevant files
+          for CHECK_ID in "${!CHECK_FILES[@]}"; do
+            echo "Running Checkov for $CHECK_ID"
+            FILES="${CHECK_FILES[$CHECK_ID]}"
             
-            # Count expected failures in this file
-            EXPECTED_FAILURES=$(grep -c "fail" $file_path || echo "0")
+            # Count expected failures in these files
+            EXPECTED_FAILURES=$(grep -c "fail" $FILES || echo "0")
             
-            # Run checkov and capture output
-            OUTPUT=$(checkov -f $file_path --external-checks-dir ./custom_checks --check $CHECK_ID -o json || true)
+            # Run checkov on all files for this check ID
+            OUTPUT=$(checkov -f $FILES --external-checks-dir ./custom_checks --check $CHECK_ID -o json || true)
             
-            # Parse the JSON output to get passed and failed counts
+            # Parse the JSON output
             PASSED=$(echo $OUTPUT | jq '.summary.passed' 2>/dev/null || echo "0")
             FAILED=$(echo $OUTPUT | jq '.summary.failed' 2>/dev/null || echo "0")
             
@@ -79,17 +119,17 @@ jobs:
             if [ "$FAILED" -gt 0 ]; then
               if [ "$EXPECTED_FAILURES" -gt 0 ]; then
                 EXPECTED_FAILED_CHECKS=$((EXPECTED_FAILED_CHECKS + FAILED))
-                echo "Found $FAILED expected failures in $file_path"
+                echo "Found $FAILED expected failures for $CHECK_ID"
               else
                 UNEXPECTED_FAILED_CHECKS=$((UNEXPECTED_FAILED_CHECKS + FAILED))
-                echo "Found $FAILED UNEXPECTED failures in $file_path"
+                echo "Found $FAILED UNEXPECTED failures for $CHECK_ID"
                 # Fail the workflow if there are unexpected failures
                 exit 1
               fi
             fi
             
             # Add to summary
-            CHECK_NAME=$(echo $filename | cut -d'_' -f3- | sed 's/\.tf$//')
+            CHECK_NAME=$(echo $FILES | xargs -n1 basename | head -1 | cut -d'_' -f3- | sed 's/\.tf$//')
             SUMMARY="${SUMMARY}| ${CHECK_ID} | ${CHECK_NAME} | ${PASSED} | ${FAILED} | ${EXPECTED_FAILURES} |\n"
           done
           
