@@ -25,11 +25,16 @@ jobs:
 
       - name: Install dependencies
         run: |
+          uv venv
+          source .venv/bin/activate
           uv pip install checkov jq
 
       - name: Run Checkov on examples
         id: run_checkov
         run: |
+          # Activate the virtual environment
+          source .venv/bin/activate
+          
           # Create a list of all example files
           EXAMPLE_FILES=$(find ./examples -name "example_*.tf" | sort)
           
