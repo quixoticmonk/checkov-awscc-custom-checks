@@ -66,13 +66,18 @@ jobs:
             PASSED=$(echo $OUTPUT | jq '.summary.passed' 2>/dev/null || echo "0")
             FAILED=$(echo $OUTPUT | jq '.summary.failed' 2>/dev/null || echo "0")
             
+            # Ensure values are integers
+            PASSED=${PASSED:-0}
+            FAILED=${FAILED:-0}
+            EXPECTED_FAILURES=${EXPECTED_FAILURES:-0}
+            
             # Update counters
             TOTAL_CHECKS=$((TOTAL_CHECKS + PASSED + FAILED))
             PASSED_CHECKS=$((PASSED_CHECKS + PASSED))
             
             # Check if failures were expected
-            if [ $FAILED -gt 0 ]; then
-              if [ $EXPECTED_FAILURES -gt 0 ]; then
+            if [ "$FAILED" -gt 0 ]; then
+              if [ "$EXPECTED_FAILURES" -gt 0 ]; then
                 EXPECTED_FAILED_CHECKS=$((EXPECTED_FAILED_CHECKS + FAILED))
                 echo "Found $FAILED expected failures in $file_path"
               else
