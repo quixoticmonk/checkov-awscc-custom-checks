@@ -37,6 +37,11 @@ This repository contains custom Checkov checks for AWS Cloud Control API (AWSCC)
 | CKV_AWSCC_29 | awscc_s3_bucket | Ensure S3 buckets block public ACLs |
 | CKV_AWSCC_30 | awscc_bedrock_agent | Ensure Bedrock agents are encrypted |
 | CKV_AWSCC_31 | awscc_bedrock_agent | Ensure Bedrock agents have guardrails enabled |
+| CKV_AWSCC_32 | awscc_lambda_function | Ensure AWS Lambda function is configured to validate code-signing |
+| CKV_AWSCC_33 | awscc_lambda_function | Ensure Lambda Runtime is not deprecated |
+| CKV_AWSCC_34 | awscc_opensearch_domain | Ensure Elasticsearch Domain Logging is enabled |
+| CKV_AWSCC_35 | awscc_lambda_permission | Ensure that AWS Lambda function is not publicly accessible |
+| CKV_AWSCC_36 | awscc_eks_cluster | Ensure EKS clusters run on a supported Kubernetes version |
 
 ## Usage
 

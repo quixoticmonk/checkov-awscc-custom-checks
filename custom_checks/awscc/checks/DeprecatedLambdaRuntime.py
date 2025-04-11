@@ -1,0 +1,34 @@
+from typing import Any, List
+
+from checkov.common.models.enums import CheckCategories
+from checkov.terraform.checks.resource.base_resource_negative_value_check import \
+    BaseResourceNegativeValueCheck
+
+
+class DeprecatedLambdaRuntime(BaseResourceNegativeValueCheck):
+    def __init__(self) -> None:
+        name = "Ensure Lambda Runtime is not deprecated"
+        id = "CKV_AWSCC_33"
+        supported_resources = ['awscc_lambda_function']
+        categories = [CheckCategories.GENERAL_SECURITY]
+        super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)
+
+    def get_inspected_key(self) -> str:
+        return "runtime"
+
+    def get_forbidden_values(self) -> List[Any]:
+        # Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+        return [
+            # Deprecated runtimes as of April 2025
+            "dotnetcore3.1", "nodejs12.x", "python3.6", "python2.7", "dotnet5.0", 
+            "dotnetcore2.1", "ruby2.5", "nodejs10.x", "nodejs8.10", "nodejs4.3", 
+            "nodejs6.10", "dotnetcore1.0", "dotnetcore2.0", "nodejs4.3-edge", 
+            "nodejs", "java8", "python3.7", "go1.x", "provided", "ruby2.7", 
+            "nodejs14.x", "nodejs16.x", "python3.8", "dotnet7", "dotnet6",
+            # "nodejs18.x",  # will be deprecated on Sept 1, 2025
+            # "provided.al2",  # Will be deprecated on Jun 30, 2026
+            # "python3.9",  # Will be deprecated on Nov 3, 2025
+        ]
+
+
+check = DeprecatedLambdaRuntime()
