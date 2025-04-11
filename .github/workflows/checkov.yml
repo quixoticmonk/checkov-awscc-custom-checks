@@ -1,0 +1,101 @@
+name: Checkov Custom Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          uv pip install checkov jq
+
+      - name: Run Checkov on examples
+        id: run_checkov
+        run: |
+          # Create a list of all example files
+          EXAMPLE_FILES=$(find ./examples -name "example_*.tf" | sort)
+          
+          # Initialize summary variables
+          TOTAL_CHECKS=0
+          PASSED_CHECKS=0
+          EXPECTED_FAILED_CHECKS=0
+          UNEXPECTED_FAILED_CHECKS=0
+          SUMMARY=""
+          
+          # Run Checkov on each example file
+          for file_path in $EXAMPLE_FILES; do
+            echo "Running Checkov on $file_path"
+            
+            # Extract check ID from filename
+            filename=$(basename "$file_path")
+            CHECK_NUM=$(echo $filename | cut -d'_' -f2)
+            CHECK_ID="CKV_AWSCC_${CHECK_NUM}"
+            
+            echo "Using check ID: $CHECK_ID"
+            
+            # Count expected failures in this file
+            EXPECTED_FAILURES=$(grep -c "fail" $file_path || echo "0")
+            
+            # Run checkov and capture output
+            OUTPUT=$(checkov -f $file_path --external-checks-dir ./custom_checks --check $CHECK_ID -o json || true)
+            
+            # Parse the JSON output to get passed and failed counts
+            PASSED=$(echo $OUTPUT | jq '.summary.passed' 2>/dev/null || echo "0")
+            FAILED=$(echo $OUTPUT | jq '.summary.failed' 2>/dev/null || echo "0")
+            
+            # Update counters
+            TOTAL_CHECKS=$((TOTAL_CHECKS + PASSED + FAILED))
+            PASSED_CHECKS=$((PASSED_CHECKS + PASSED))
+            
+            # Check if failures were expected
+            if [ $FAILED -gt 0 ]; then
+              if [ $EXPECTED_FAILURES -gt 0 ]; then
+                EXPECTED_FAILED_CHECKS=$((EXPECTED_FAILED_CHECKS + FAILED))
+                echo "Found $FAILED expected failures in $file_path"
+              else
+                UNEXPECTED_FAILED_CHECKS=$((UNEXPECTED_FAILED_CHECKS + FAILED))
+                echo "Found $FAILED UNEXPECTED failures in $file_path"
+                # Fail the workflow if there are unexpected failures
+                exit 1
+              fi
+            fi
+            
+            # Add to summary
+            CHECK_NAME=$(echo $filename | cut -d'_' -f3- | sed 's/\.tf$//')
+            SUMMARY="${SUMMARY}| ${CHECK_ID} | ${CHECK_NAME} | ${PASSED} | ${FAILED} | ${EXPECTED_FAILURES} |\n"
+          done
+          
+          # Create GitHub step summary
+          echo "## Checkov Custom Checks Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Total checks run: $TOTAL_CHECKS" >> $GITHUB_STEP_SUMMARY
+          echo "Passed checks: $PASSED_CHECKS" >> $GITHUB_STEP_SUMMARY
+          echo "Expected failed checks: $EXPECTED_FAILED_CHECKS" >> $GITHUB_STEP_SUMMARY
+          echo "Unexpected failed checks: $UNEXPECTED_FAILED_CHECKS" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check ID | Check Name | Passed | Failed | Expected Failures |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|------------|--------|--------|-------------------|" >> $GITHUB_STEP_SUMMARY
+          echo -e "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+          
+          # Set output for the job
+          echo "passed_checks=$PASSED_CHECKS" >> $GITHUB_OUTPUT
+          echo "expected_failed_checks=$EXPECTED_FAILED_CHECKS" >> $GITHUB_OUTPUT
+          echo "unexpected_failed_checks=$UNEXPECTED_FAILED_CHECKS" >> $GITHUB_OUTPUT
