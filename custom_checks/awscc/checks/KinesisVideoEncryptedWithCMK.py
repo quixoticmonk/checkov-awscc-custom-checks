@@ -7,7 +7,7 @@ class KinesisVideoEncryptedWithCMK(BaseResourceValueCheck):
     def __init__(self):
         name = "Ensure Kinesis Video Stream is encrypted by KMS using a customer managed Key (CMK)"
         id = "CKV_AWSCC_62"
-        supported_resources = ['awscc_kinesis_video_stream']
+        supported_resources = ['awscc_kinesisvideo_stream']
         categories = [CheckCategories.ENCRYPTION]
         super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)
 

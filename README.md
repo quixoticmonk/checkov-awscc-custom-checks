@@ -112,6 +112,24 @@ This repository contains custom Checkov checks for AWS Cloud Control API (AWSCC)
 | CKV_AWSCC_115 | awscc_autoscaling_auto_scaling_group | Ensure Auto Scaling groups span multiple Availability Zones |
 | CKV_AWSCC_116 | awscc_autoscaling_auto_scaling_group | Ensure Auto Scaling groups propagate tags to EC2 instances |
 | CKV_AWSCC_118 | awscc_batch_job_definition | Batch job does not define a privileged container |
+| CKV_AWSCC_120 | awscc_cloudwatch_alarm | Ensure that CloudWatch alarm actions are enabled |
+| CKV_AWSCC_121 | awscc_logs_log_group | Ensure that CloudWatch Log Group specifies retention days |
+| CKV_AWSCC_122 | awscc_logs_log_group | Ensure CloudWatch log groups retains logs for at least 1 year |
+| CKV_AWSCC_123 | awscc_cloudtrail_trail | Ensure CloudTrail logging is enabled |
+| CKV_AWSCC_124 | awscc_cloudtrail_event_data_store | Ensure CloudTrail Event Data Store uses CMK |
+| CKV_AWSCC_125 | awscc_codeartifact_domain | Ensure CodeArtifact Domain is encrypted by KMS using a customer managed Key (CMK) |
+| CKV_AWSCC_126 | awscc_cognito_identity_pool | Ensure AWS Cognito identity pool does not allow unauthenticated guest access |
+| CKV_AWSCC_127 | awscc_comprehend_document_classifier | Ensure that Comprehend Document Classifier's model is encrypted by KMS using a customer managed Key (CMK) |
+| CKV_AWSCC_128 | awscc_comprehend_document_classifier | Ensure that Comprehend Document Classifier's volume is encrypted by KMS using a customer managed Key (CMK) |
+| CKV_AWSCC_129 | awscc_config_configuration_aggregator | Ensure AWS Config is enabled in all regions |
+| CKV_AWSCC_130 | awscc_connect_instance_storage_config | Ensure Connect Instance Kinesis Video Stream Storage Config uses CMK |
+| CKV_AWSCC_131 | awscc_connect_instance_storage_config | Ensure Connect Instance S3 Storage Config uses CMK |
+| CKV_AWSCC_132 | awscc_datasync_location_object_storage | Ensure DataSync Location Object Storage doesn't expose secrets |
+| CKV_AWSCC_133 | awscc_ec2_instance | Ensure no hard-coded secrets exist in EC2 user data |
+| CKV_AWSCC_134 | awscc_ec2_instance | Ensure that detailed monitoring is enabled for EC2 instances |
+| CKV_AWSCC_135 | awscc_ec2_instance | Ensure that EC2 is EBS optimized |
+| CKV_AWSCC_136 | awscc_ec2_instance | EC2 instance should not have public IP |
+| CKV_AWSCC_137 | awscc_eks_cluster | Ensure EKS Cluster has Secrets Encryption Enabled |
 
 ## Usage
 
