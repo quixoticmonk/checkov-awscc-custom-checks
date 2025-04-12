@@ -14,6 +14,15 @@ resource "awscc_msk_cluster" "pass" {
     }
   }
 
+  # Add encryption configuration to pass the encryption check
+  encryption_info = {
+    encryption_at_rest_kms_key_arn = "arn:aws:kms:us-west-2:123456789012:key/abcd1234-a123-456a-a12b-a123b4cd56ef"
+    encryption_in_transit = {
+      client_broker = "TLS"
+      in_cluster = true
+    }
+  }
+
   logging_info = {
     broker_logs = {
       cloudwatch_logs = {

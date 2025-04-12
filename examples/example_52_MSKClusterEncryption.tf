@@ -27,6 +27,16 @@ resource "awscc_msk_cluster" "pass" {
     }
   }
   
+  # Add logging configuration to pass the logging check
+  logging_info = {
+    broker_logs = {
+      cloudwatch_logs = {
+        enabled = true
+        log_group = "msk-cluster-logs"
+      }
+    }
+  }
+  
   tags = {
     Environment = "Production"
     Owner = "Data Team"

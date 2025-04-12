@@ -111,6 +111,7 @@ This repository contains custom Checkov checks for AWS Cloud Control API (AWSCC)
 | CKV_AWSCC_114 | awscc_autoscaling_auto_scaling_group | Ensure Auto Scaling groups use IMDSv2 |
 | CKV_AWSCC_115 | awscc_autoscaling_auto_scaling_group | Ensure Auto Scaling groups span multiple Availability Zones |
 | CKV_AWSCC_116 | awscc_autoscaling_auto_scaling_group | Ensure Auto Scaling groups propagate tags to EC2 instances |
+| CKV_AWSCC_118 | awscc_batch_job_definition | Batch job does not define a privileged container |
 
 ## Usage
 

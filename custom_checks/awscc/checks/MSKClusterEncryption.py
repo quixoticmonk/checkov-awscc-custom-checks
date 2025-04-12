@@ -14,19 +14,20 @@ class MSKClusterEncryption(BaseResourceCheck):
     def scan_resource_conf(self, conf):
         # Note: As long as the 'encryption_info' block is specified, the cluster
         # will be encrypted at rest even if 'encryption_at_rest_kms_key_arn' is not specified
-        if 'encryption_info' in conf.keys():
-            encryption = conf['encryption_info'][0]
-            if 'encryption_in_transit' in encryption:
-                transit = encryption['encryption_in_transit'][0]
-                if 'client_broker' in transit and transit['client_broker'][0] != 'TLS' or \
-                        'in_cluster' in transit and transit['in_cluster'][0] is False:
+        if 'encryption_info' in conf.keys() and isinstance(conf['encryption_info'], dict):
+            encryption = conf['encryption_info']
+            if 'encryption_in_transit' in encryption and isinstance(encryption['encryption_in_transit'], dict):
+                transit = encryption['encryption_in_transit']
+                if 'client_broker' in transit and transit['client_broker'] != 'TLS':
+                    return CheckResult.FAILED
+                if 'in_cluster' in transit and transit['in_cluster'] is False:
                     return CheckResult.FAILED
             return CheckResult.PASSED
         return CheckResult.FAILED
 
     def get_evaluated_keys(self) -> List[str]:
-        return ['encryption_info/[0]/encryption_in_transit/[0]/client_broker',
-                'encryption_info/[0]/encryption_in_transit/[0]/in_cluster']
+        return ['encryption_info/encryption_in_transit/client_broker',
+                'encryption_info/encryption_in_transit/in_cluster']
 
 
 check = MSKClusterEncryption()
