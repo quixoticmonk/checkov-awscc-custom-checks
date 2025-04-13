@@ -10,7 +10,7 @@ This repository contains custom Checkov checks for AWS Cloud Control API (AWSCC)
 
 | Check ID | Resource | Description |
 |----------|----------|-------------|
-| CKV_AWSCC_0 | awscc_general_resource | Ensure no hard coded AWS access key and secret key exists in provider |
+| CKV_AWSCC_0 | provider level | Ensure no hard coded AWS access key and secret key exists in provider |
 | CKV_AWSCC_01 | awscc_ec2_volume | Ensure EBS volumes are encrypted |
 | CKV_AWSCC_02 | awscc_kms_key | Ensure KMS keys have rotation enabled |
 | CKV_AWSCC_03 | awscc_s3_bucket | Ensure S3 bucket has versioning enabled |
