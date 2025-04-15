@@ -1,6 +1,6 @@
-# Checkov Custom Checks for AWS Cloud Control API (AWSCC)
+# Checkov Custom Checks for AWS Cloud Control(AWSCC)
 
-This repository contains custom Checkov checks for AWS Cloud Control API (AWSCC) resources. These checks help ensure that your infrastructure as code follows security best practices and compliance requirements.
+This repository contains custom Checkov checks for AWS Cloud Control(AWSCC) resources. These checks help ensure that your infrastructure as code follows security best practices and compliance requirements.
 
 > [!NOTE]  
 > 15-20 of the checks were initially written manually and the rest were auto generated using Q chat on a terminal requiring examples to test agains. Do review the GitHub actions summary to view if any of the policy checks have any issues on testing.
