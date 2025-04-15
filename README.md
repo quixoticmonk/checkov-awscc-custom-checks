@@ -144,6 +144,16 @@ The checks below fall under some of the below categories.
 | CKV_AWSCC_135 | awscc_ec2_instance | Ensure that EC2 is EBS optimized | [EC2.8](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-8) |
 | CKV_AWSCC_136 | awscc_ec2_instance | EC2 instance should not have public IP | [EC2.19](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-19) |
 | CKV_AWSCC_137 | awscc_eks_cluster | Ensure EKS Cluster has Secrets Encryption Enabled | [EKS.7](https://docs.aws.amazon.com/securityhub/latest/userguide/eks-controls.html#eks-7) |
+| CKV_AWSCC_138 | awscc_sagemaker_data_quality_job_definition | Ensure Amazon Sagemaker Data Quality Job uses KMS to encrypt model artifacts |  |
+| CKV_AWSCC_139 | awscc_sagemaker_data_quality_job_definition | Ensure Amazon Sagemaker Data Quality Job uses KMS to encrypt data on attached storage volume |  |
+| CKV_AWSCC_140 | awscc_sagemaker_data_quality_job_definition | Ensure Amazon Sagemaker Data Quality Job encrypts all communications between instances used for monitoring jobs |  |
+| CKV_AWSCC_141 | awscc_guardduty_detector | Ensure GuardDuty is enabled to specific org/region |  |
+| CKV_AWSCC_142 | awscc_ec2_security_group | Ensure security groups have descriptions | [EC2.21](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-21) |
+| CKV_AWSCC_143 | awscc_ec2_security_group_ingress, awscc_ec2_security_group_egress | Ensure security group rules have descriptions | [EC2.21](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-21) |
+| CKV_AWSCC_144 | awscc_ec2_security_group_ingress | Ensure no security groups allow ingress from 0.0.0.0/0 or ::/0 to port 22 | [EC2.13](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-13) |
+| CKV_AWSCC_145 | awscc_ec2_security_group_ingress | Ensure no security groups allow ingress from 0.0.0.0/0 or ::/0 to port 3389 | [EC2.14](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-14) |
+| CKV_AWSCC_146 | awscc_iam_role_policy, awscc_iam_group_policy, awscc_iam_user_policy | Ensure IAM policies do not allow admin privileges | [IAM.1](https://docs.aws.amazon.com/securityhub/latest/userguide/iam-controls.html#iam-1) |
+| CKV_AWSCC_147 | awscc_iam_role_policy, awscc_iam_group_policy, awscc_iam_user_policy | Ensure IAM policies do not allow full '*' administrative privileges | [IAM.1](https://docs.aws.amazon.com/securityhub/latest/userguide/iam-controls.html#iam-1) |
 
 
 
