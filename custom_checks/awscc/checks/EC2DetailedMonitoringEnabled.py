@@ -7,7 +7,7 @@ class EC2DetailedMonitoringEnabled(BaseResourceCheck):
         name = "Ensure that detailed monitoring is enabled for EC2 instances"
         id = "CKV_AWSCC_134"
         supported_resources = ["awscc_ec2_instance"]
-        categories = [CheckCategories.MONITORING]
+        categories = [CheckCategories.LOGGING]
         super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)
 
     def scan_resource_conf(self, conf):
