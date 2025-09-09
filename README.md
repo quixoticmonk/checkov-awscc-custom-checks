@@ -154,6 +154,15 @@ The checks below fall under some of the below categories.
 | CKV_AWSCC_145 | awscc_ec2_security_group_ingress | Ensure no security groups allow ingress from 0.0.0.0/0 or ::/0 to port 3389 | [EC2.14](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-14) |
 | CKV_AWSCC_146 | awscc_iam_role_policy, awscc_iam_group_policy, awscc_iam_user_policy | Ensure IAM policies do not allow admin privileges | [IAM.1](https://docs.aws.amazon.com/securityhub/latest/userguide/iam-controls.html#iam-1) |
 | CKV_AWSCC_147 | awscc_iam_role_policy, awscc_iam_group_policy, awscc_iam_user_policy | Ensure IAM policies do not allow full '*' administrative privileges | [IAM.1](https://docs.aws.amazon.com/securityhub/latest/userguide/iam-controls.html#iam-1) |
+| CKV_AWSCC_148 | awscc_ec2_snapshot | Ensure EBS snapshots are not publicly restorable | [EC2.1](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-1) |
+| CKV_AWSCC_149 | awscc_ec2_security_group | Ensure VPC default security groups do not allow inbound or outbound traffic | [EC2.2](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-2) |
+| CKV_AWSCC_150 | awscc_ec2_vpc | Ensure VPC flow logging is enabled | [EC2.6](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-6) |
+| CKV_AWSCC_151 | awscc_ec2_ebs_encryption_by_default | Ensure EBS default encryption is enabled | [EC2.7](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-7) |
+| CKV_AWSCC_152 | awscc_ec2_instance | Ensure EC2 instances use Instance Metadata Service Version 2 (IMDSv2) | [EC2.8](https://docs.aws.amazon.com/securityhub/latest/userguide/ec2-controls.html#ec2-8) |
+| CKV_AWSCC_153 | awscc_s3_bucket | Ensure S3 buckets do not allow public read access | [S3.2](https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-2) |
+| CKV_AWSCC_154 | awscc_s3_bucket | Ensure S3 buckets require requests to use SSL | [S3.5](https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-5) |
+| CKV_AWSCC_155 | awscc_lambda_function | Ensure Lambda functions are deployed in a VPC | [Lambda.3](https://docs.aws.amazon.com/securityhub/latest/userguide/lambda-controls.html#lambda-3) |
+| CKV_AWSCC_156 | awscc_lambda_function | Ensure VPC Lambda functions operate in multiple Availability Zones | [Lambda.5](https://docs.aws.amazon.com/securityhub/latest/userguide/lambda-controls.html#lambda-5) |
 
 
 
